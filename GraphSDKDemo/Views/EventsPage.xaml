@@ -1,0 +1,254 @@
+﻿<Page x:Class="GraphSDKDemo.EventsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:GraphSDKDemo"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:data="using:GraphSDKDemo.Models"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <!-- When using x:Bind, you need to set x:DataType -->
+        <DataTemplate x:Name="EventListViewTemplate"
+                      x:DataType="data:Event">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1"
+                           Text="{x:Bind Subject}"
+                           x:Phase="1"
+                           Style="{ThemeResource BaseTextBlockStyle}"
+                           Margin="12,6,0,0" />
+                <TextBlock  Grid.Column="1"
+                            Grid.Row="1"
+                            Text="{x:Bind Location}"
+                            x:Phase="2"
+                            Style="{ThemeResource BodyTextBlockStyle}"
+                            Margin="12,0,0,6" />
+                <TextBlock  Grid.Column="1"
+                            Grid.Row="2"
+                            Text="{x:Bind Organizer}"
+                            x:Phase="2"
+                            Style="{ThemeResource BodyTextBlockStyle}"
+                            Margin="12,0,0,6" />
+                <StackPanel Grid.Column="1"
+                            Grid.Row="3"
+                            Orientation="Horizontal">
+                    <TextBlock  Text="{x:Bind Start}"
+                                x:Phase="2"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Margin="12,0,0,6" />
+                    <TextBlock  Text="to"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Margin="5,0,0,0" />
+                    <TextBlock  Text="{x:Bind End}"
+                                x:Phase="2"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Margin="5,0,0,6" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--#region Navigation Panel -->
+        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
+                VerticalAlignment="Center"
+                Click="ShowSliptView" />
+        <TextBlock Text="Events Sample"
+                   VerticalAlignment="Center"
+                   Style="{ThemeResource TitleTextBlockStyle}"
+                   Grid.Column="1" />
+        <!--#endregion-->
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="1"
+                    Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="GetEventsButton"
+                        Content="Get events"
+                        Width="150"
+                        Click="GetEventsButton_Click" />
+                <Button x:Name="GetTodayEventsButton"
+                        Content="Get today"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="GetTodayEventsButton_Click" />
+                <Button x:Name="GetBirthdaysButton"
+                        Content="Get birthdays"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="GetBirthdaysButton_Click" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,10,0,0">
+                <Button x:Name="CreateEventButton"
+                        Content="Create event"
+                        Width="150"
+                        Click="CreateEventButton_Click" />
+                <Button x:Name="UpdateEventButton"
+                        Content="Update event"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="UpdateEventButton_Click" />
+                <Button x:Name="DeleteEventButton"
+                        Content="Delete event"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="DeleteEventButton_Click" />
+            </StackPanel>
+            <TextBlock x:Name="EventCountTextBlock"
+                       Margin="10,10,0,0"
+                       HorizontalAlignment="Left"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Top" />
+        </StackPanel>
+
+        <Grid Grid.Row="2"
+              Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ListView x:Name="EventsListView"
+                      ItemsSource="{x:Bind MyEvents}"
+                      ItemTemplate="{StaticResource EventListViewTemplate}"
+                      SelectionMode="Single"
+                      ShowsScrollingPlaceholders="True"
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      Margin="-10,10,0,0"
+                      SelectionChanged="EventsListView_SelectionChanged">
+
+                <!--<ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate x:DataType="data:GroupInfoList">
+                            <TextBlock Text="{x:Bind Key}"
+                                       Style="{ThemeResource TitleTextBlockStyle}" />
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>-->
+            </ListView>
+
+            <ScrollViewer Grid.Row="0"
+                          Grid.Column="1">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Subject:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="SubjectTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Location:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="LocationTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Organizer:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="OrganizerTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Start:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="StartTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="End:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="EndTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="All Day:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="AllDayTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Recurring:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="RecurringTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Categories:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="CategoriesTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <local:SamplesPane x:Name="MySamplesPane"
+                           Grid.ColumnSpan="2"
+                           Grid.RowSpan="3" />
+    </Grid>
+</Page>

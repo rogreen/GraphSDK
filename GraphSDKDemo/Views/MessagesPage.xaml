@@ -1,0 +1,254 @@
+﻿<Page x:Class="GraphSDKDemo.MessagesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:GraphSDKDemo"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:data="using:GraphSDKDemo.Models"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <!-- When using x:Bind, you need to set x:DataType -->
+        <DataTemplate x:Name="MessageListViewTemplate"
+                      x:DataType="data:Message">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="1"
+                           Text="{x:Bind Subject}"
+                           x:Phase="1"
+                           Style="{ThemeResource BaseTextBlockStyle}"
+                           Margin="12,6,0,0" />
+                <TextBlock  Grid.Row="1"
+                            Grid.Column="1"
+                            Text="{x:Bind Sender}"
+                            x:Phase="2"
+                            Style="{ThemeResource BodyTextBlockStyle}"
+                            Margin="12,0,0,6" />
+                <StackPanel Grid.Row="2"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                    <TextBlock  Text="{x:Bind Importance}"
+                                x:Phase="2"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Margin="12,0,0,6" />
+                    <TextBlock  Text="importance"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Margin="5,0,0,0" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--#region Navigation Panel -->
+        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
+                VerticalAlignment="Center"
+                Click="ShowSliptView" />
+        <TextBlock Text="Messages Sample"
+                   VerticalAlignment="Center"
+                   Style="{ThemeResource TitleTextBlockStyle}"
+                   Grid.Column="1" />
+        <!--#endregion-->
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="1"
+                    Grid.Column="1">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="GetMessagesButton"
+                        Content="Get mail"
+                        Width="150"
+                        Click="GetMessagesButton_Click" />
+                <Button x:Name="GetInboxMessagesButton"
+                        Content="Get inbox mail"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="GetInboxMessagesButton_Click" />
+                <Button x:Name="GetHighImportanceMessagesButton"
+                        Content="Get ! mail"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="GetHighImportanceMessagesButton_Click" />
+                <Button x:Name="GetRogreenHighImportanceMessagesButton"
+                        Content="Get rogreen ! mail"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="GetRogreenHighImportanceMessagesButton_Click" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,10,0,0">
+                <Button x:Name="SendMessageButton"
+                        Content="Send mail"
+                        Width="150"
+                        Click="SendMessageButton_Click" />
+                <Button x:Name="ReplyMessageButton"
+                        Content="Reply to mail"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="ReplyMessageButton_Click" />
+                <Button x:Name="ForwardMessageButton"
+                        Content="Forward mail"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="ForwardMessageButton_Click" />
+                <Button x:Name="DeleteMessageButton"
+                        Content="Delete mail"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="DeleteMessageButton_Click" />
+            </StackPanel>
+            <TextBlock x:Name="MessageCountTextBlock"
+                       Margin="10,10,0,0"
+                       HorizontalAlignment="Left"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Top" />
+        </StackPanel>
+
+        <Grid Grid.Row="2"
+              Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ListView x:Name="MessagesListView"
+                      ItemsSource="{x:Bind MyMessages}"
+                      ItemTemplate="{StaticResource MessageListViewTemplate}"
+                      SelectionMode="Single"
+                      ShowsScrollingPlaceholders="True"
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      Margin="-10,10,0,0"
+                      SelectionChanged="MessagesListView_SelectionChanged">
+
+                <!--<ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate x:DataType="data:GroupInfoList">
+                            <TextBlock Text="{x:Bind Key}"
+                                       Style="{ThemeResource TitleTextBlockStyle}" />
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>-->
+            </ListView>
+
+            <ScrollViewer Grid.Row="0"
+                          Grid.Column="1">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Sender:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="SenderTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="From:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="FromTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Subject:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="SubjectTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Preview:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="PreviewTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Date:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="DateTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Importance:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="ImportanceTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Is read:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="IsReadTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Attachments:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="AttachmentsTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+
+        </Grid>
+        <local:SamplesPane x:Name="MySamplesPane"
+                           Grid.ColumnSpan="2"
+                           Grid.RowSpan="3" />
+    </Grid>
+</Page>
