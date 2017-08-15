@@ -9,8 +9,7 @@ namespace GraphSDKDemo
     internal static class AuthenticationHelper
     {
         // The Client ID is used by the application to uniquely identify itself to Microsoft Azure Active Directory (AD).
-        static string clientId = "1fa66ad4-852e-46e6-a3db-40c2597ff753";
-        static string returnUrl = "urn:ietf:wg:oauth:2.0:oob";
+        static string clientId = "54dfdac0-03e0-4390-b465-28a3465749c1";
 
 
         public static PublicClientApplication IdentityClientApp = null;
@@ -60,7 +59,6 @@ namespace GraphSDKDemo
         {
             if (TokenForUser == null || expiration <= DateTimeOffset.UtcNow.AddMinutes(5))
             {
-                var redirectUri = new Uri(returnUrl);
                 var scopes = new string[]
                         {
                         "https://graph.microsoft.com/User.Read",
