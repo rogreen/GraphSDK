@@ -38,8 +38,8 @@ namespace GraphSDKDemo
 
                 var options = new List<QueryOption>
                 {
-                    new QueryOption("startDateTime", DateTime.Now.ToString("o")),
-                    new QueryOption("endDateTime", DateTime.Now.AddDays(7).ToString("o"))
+                    new QueryOption("startDateTime", DateTime.Today.ToString("o")),
+                    new QueryOption("endDateTime", DateTime.Today.AddDays(7).ToString("o"))
                 };
                 ICalendarCalendarViewCollectionPage calendar =
                     await graphClient.Me.Calendar.CalendarView.Request(options)
@@ -82,8 +82,8 @@ namespace GraphSDKDemo
             {
                 var options = new List<QueryOption>
                 {
-                    new QueryOption("startDateTime", DateTime.Now.ToString("o")),
-                    new QueryOption("endDateTime", DateTime.Now.ToString("o"))
+                    new QueryOption("startDateTime", DateTime.Today.ToString("o")),
+                    new QueryOption("endDateTime", DateTime.Today.AddDays(1).ToString("o"))
                 };
                 ICalendarCalendarViewCollectionPage calendar =
                     await graphClient.Me.Calendar.CalendarView.Request(options)
@@ -129,7 +129,7 @@ namespace GraphSDKDemo
                 var options = new List<QueryOption>
                 {
                     new QueryOption("startDateTime", DateTime.Now.ToString("o")),
-                    new QueryOption("endDateTime", DateTime.Now.AddDays(7).ToString("o"))
+                    new QueryOption("endDateTime", DateTime.Now.AddDays(14).ToString("o"))
                 };
                 ICalendarCalendarViewCollectionPage calendar =
                     await graphClient.Me.Calendar.CalendarView.Request(options)
@@ -148,7 +148,7 @@ namespace GraphSDKDemo
                     });
                 }
 
-                EventCountTextBlock.Text = $"You have {MyEvents.Count()} birthdays in the next week:";
+                EventCountTextBlock.Text = $"You have {MyEvents.Count()} birthdays in the next 2 weeks:";
                 EventsListView.ItemsSource = MyEvents;
             }
             catch (ServiceException ex)
@@ -172,9 +172,9 @@ namespace GraphSDKDemo
 
                 LocationTextBlock.Text = (myEvent.Location != null) ?
                                           $"{myEvent.Location.DisplayName}\n" +
-                                          $"{myEvent.Location.Address.Street}\n" +
-                                          $"{myEvent.Location.Address.City} " +
-                                          $"{myEvent.Location.Address.State}" :
+                                          $"{myEvent.Location.Address?.Street}\n" +
+                                          $"{myEvent.Location.Address?.City} " +
+                                          $"{myEvent.Location.Address?.State}" :
                                           "Unknown location";
                 OrganizerTextBlock.Text = (myEvent.Organizer != null) ?
                                            $"{myEvent.Organizer.EmailAddress.Name}\n" +
