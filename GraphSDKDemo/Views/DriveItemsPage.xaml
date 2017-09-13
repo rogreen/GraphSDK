@@ -1,4 +1,4 @@
-﻿<Page x:Class="GraphSDKDemo.EventsPage"
+﻿<Page x:Class="GraphSDKDemo.DriveItemsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:GraphSDKDemo"
@@ -9,8 +9,8 @@
 
     <Page.Resources>
         <!-- When using x:Bind, you need to set x:DataType -->
-        <DataTemplate x:Name="EventListViewTemplate"
-                      x:DataType="data:Event">
+        <DataTemplate x:Name="FolderListViewTemplate"
+                      x:DataType="data:Folder">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -23,37 +23,54 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="1"
-                           Text="{x:Bind Subject}"
-                           x:Phase="1"
-                           Style="{ThemeResource BaseTextBlockStyle}"
-                           Margin="12,6,0,0" />
                 <TextBlock  Grid.Column="1"
-                            Grid.Row="1"
-                            Text="{x:Bind Location}"
+                            Text="{x:Bind Name}"
                             x:Phase="2"
                             Style="{ThemeResource BodyTextBlockStyle}"
-                            Margin="12,0,0,6" />
-                <TextBlock  Grid.Column="1"
-                            Grid.Row="2"
-                            Text="{x:Bind Organizer}"
-                            x:Phase="2"
-                            Style="{ThemeResource BodyTextBlockStyle}"
-                            Margin="12,0,0,6" />
-                <StackPanel Grid.Column="1"
-                            Grid.Row="3"
+                            Margin="12,6,0,0" />
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
                             Orientation="Horizontal">
-                    <TextBlock  Text="{x:Bind Start}"
+                    <TextBlock  Text="{x:Bind FileCount}"
                                 x:Phase="2"
                                 Style="{ThemeResource BodyTextBlockStyle}"
                                 Margin="12,0,0,6" />
-                    <TextBlock  Text="to"
+                    <TextBlock  Text="files"
                                 Style="{ThemeResource BodyTextBlockStyle}"
                                 Margin="5,0,0,0" />
-                    <TextBlock  Text="{x:Bind End}"
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Name="FileListViewTemplate"
+                      x:DataType="data:File">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock  Grid.Column="1"
+                            Text="{x:Bind Name}"
+                            x:Phase="2"
+                            Style="{ThemeResource BodyTextBlockStyle}"
+                            Margin="12,6,0,0" />
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                    <TextBlock  Text="Size:"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Margin="12,0,0,6" />
+                    <TextBlock  Text="{x:Bind Size}"
                                 x:Phase="2"
                                 Style="{ThemeResource BodyTextBlockStyle}"
-                                Margin="5,0,0,6" />
+                                Margin="5,0,0,0" />
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -74,7 +91,7 @@
         <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
                 VerticalAlignment="Center"
                 Click="ShowSplitView" />
-        <TextBlock Text="Events Sample"
+        <TextBlock Text="DriveItems Sample"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"
                    Grid.Column="1" />
@@ -84,39 +101,49 @@
                     Grid.Row="1"
                     Grid.Column="1">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="GetEventsButton"
-                        Content="Get events"
+                <Button x:Name="GetFoldersButton"
+                        Content="Get folders"
                         Width="150"
-                        Click="GetEventsButton_Click" />
-                <Button x:Name="GetTodayEventsButton"
-                        Content="Get today"
+                        Click="GetFoldersButton_Click" />
+                <Button x:Name="GetFilesButton"
+                        Content="Get files"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="GetTodayEventsButton_Click" />
-                <Button x:Name="GetBirthdaysButton"
-                        Content="Get birthdays"
+                        Click="GetFilesButton_Click" />
+                <Button x:Name="CheckFolderButton"
+                        Content="Check folder"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="GetBirthdaysButton_Click" />
+                        Click="CheckFolderButton_Click" />
+                <Button x:Name="CheckFileButton"
+                        Content="Check file"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="CheckFileButton_Click" />
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="0,10,0,0">
-                <Button x:Name="CreateEventButton"
-                        Content="Create event"
+                <Button x:Name="CreateFolderButton"
+                        Content="Create folder"
                         Width="150"
-                        Click="CreateEventButton_Click" />
-                <Button x:Name="UpdateEventButton"
-                        Content="Update event"
+                        Click="CreateFolderButton_Click" />
+                <Button x:Name="CreateFileButton"
+                        Content="Create file"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="UpdateEventButton_Click" />
-                <Button x:Name="DeleteEventButton"
-                        Content="Delete event"
+                        Click="CreateFileButton_Click" />
+                <Button x:Name="UpdateFileButton"
+                        Content="Update file"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="DeleteEventButton_Click" />
+                        Click="UpdateFileButton_Click" />
+                <Button x:Name="DeleteFileButton"
+                        Content="Delete file"
+                        Margin="10,0,0,0"
+                        Width="150"
+                        Click="DeleteFileButton_Click" />
             </StackPanel>
-            <TextBlock x:Name="EventCountTextBlock"
+            <TextBlock x:Name="DriveItemCountTextBlock"
                        Margin="10,10,0,0"
                        HorizontalAlignment="Left"
                        TextWrapping="Wrap"
@@ -130,31 +157,32 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ListView x:Name="EventsListView"
-                      ItemsSource="{x:Bind MyEvents}"
-                      ItemTemplate="{StaticResource EventListViewTemplate}"
+            <ListView x:Name="FoldersListView"
+                      ItemsSource="{x:Bind MyFolders}"
+                      ItemTemplate="{StaticResource FolderListViewTemplate}"
                       SelectionMode="Single"
                       ShowsScrollingPlaceholders="True"
                       Grid.Row="0"
                       Grid.Column="0"
                       Margin="-10,10,0,0"
-                      SelectionChanged="EventsListView_SelectionChanged">
+                      SelectionChanged="FoldersListView_SelectionChanged">
+            </ListView>
 
-                <!--<ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate x:DataType="data:GroupInfoList">
-                            <TextBlock Text="{x:Bind Key}"
-                                       Style="{ThemeResource TitleTextBlockStyle}" />
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ListView.GroupStyle>-->
+            <ListView x:Name="FilesListView"
+                      ItemsSource="{x:Bind MyFiles}"
+                      ItemTemplate="{StaticResource FileListViewTemplate}"
+                      SelectionMode="Single"
+                      ShowsScrollingPlaceholders="True"
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      Margin="-10,10,0,0"
+                      SelectionChanged="FilesListView_SelectionChanged"
+                      Visibility="Collapsed">
             </ListView>
 
             <ScrollViewer Grid.Row="0"
                           Grid.Column="1">
-                <StackPanel>
+                <!--<StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
@@ -243,11 +271,13 @@
                                    TextWrapping="Wrap"
                                    VerticalAlignment="Top" />
                     </StackPanel>
-                </StackPanel>
+                </StackPanel>-->
             </ScrollViewer>
         </Grid>
+
         <local:SamplesPane x:Name="MySamplesPane"
                            Grid.ColumnSpan="2"
                            Grid.RowSpan="3" />
     </Grid>
+
 </Page>

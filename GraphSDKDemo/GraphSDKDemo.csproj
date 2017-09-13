@@ -96,6 +96,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="AuthenticationHelper.cs" />
+    <Compile Include="Models\File.cs" />
+    <Compile Include="Models\Folder.cs" />
     <Compile Include="Views\EventsPage.xaml.cs">
       <DependentUpon>EventsPage.xaml</DependentUpon>
     </Compile>
@@ -109,6 +111,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\MessagesPage.xaml.cs">
       <DependentUpon>MessagesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DriveItemsPage.xaml.cs">
+      <DependentUpon>DriveItemsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SamplesPane.xaml.cs">
       <DependentUpon>SamplesPane.xaml</DependentUpon>
@@ -147,6 +152,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MessagesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DriveItemsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

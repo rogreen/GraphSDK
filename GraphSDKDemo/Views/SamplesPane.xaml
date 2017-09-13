@@ -35,6 +35,12 @@
                         Style="{StaticResource HomeButtonStyle}"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Left" />
+                <Button x:Name="DriveItemsButton"
+                        Content="DriveItems"
+                        Click="DriveItemsButton_Click"
+                        Style="{StaticResource HomeButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left" />
             </StackPanel>
         </SplitView.Pane>
     </SplitView>

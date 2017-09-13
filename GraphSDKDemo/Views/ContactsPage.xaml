@@ -49,7 +49,7 @@
         <!--#region Navigation Panel -->
         <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
                 VerticalAlignment="Center"
-                Click="ShowSliptView" />
+                Click="ShowSplitView" />
         <TextBlock Text="Contacts Sample"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"

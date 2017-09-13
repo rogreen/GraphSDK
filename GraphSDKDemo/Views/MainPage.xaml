@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
 
         <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
-                Click="ShowSliptView" />
+                Click="ShowSplitView" />
         <TextBlock Text="Graph SDK Demos"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"

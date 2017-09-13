@@ -30,6 +30,9 @@ namespace GraphSDKDemo
             ((Frame)Window.Current.Content).Navigate(typeof(MainPage));
         }
 
-
+        private void DriveItemsButton_Click(Object sender, RoutedEventArgs e)
+        {
+            ((Frame)Window.Current.Content).Navigate(typeof(DriveItemsPage));
+        }
     }
 }

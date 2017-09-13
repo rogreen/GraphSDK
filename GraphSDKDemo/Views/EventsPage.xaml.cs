@@ -217,24 +217,28 @@ namespace GraphSDKDemo
                 ContentType = BodyType.Text
             };
 
-            //Event start and end time
+             var location = new Location()
+            {
+                DisplayName = "Big conf room"
+            };
+
+           //Event start and end time
+
+            DateTime eventDay = DateTime.Today.AddDays(1);
+
             var eventStartTime = new DateTimeTimeZone()
             {
-                DateTime = DateTime.Today.AddDays(1).ToString("o"),
-                TimeZone = "UTC"
+                DateTime = new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 9, 0, 0).ToString("o"),
+                TimeZone = "America/Los_Angeles"
             };
             var eventEndTime = new DateTimeTimeZone()
             {
-                TimeZone = "UTC",
-                DateTime = DateTime.Today.AddDays(1).ToString("o")
+                DateTime = new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 10, 0, 0).ToString("o"),
+                TimeZone = "America/Los_Angeles"
             };
 
             //Create an event to add to the events collection
 
-            var location = new Location()
-            {
-                DisplayName = "Water cooler"
-            };
             var newEvent = new Event()
             {
                 Subject = "Weekly sync",
@@ -284,7 +288,7 @@ namespace GraphSDKDemo
             }
         }
 
-        private void ShowSliptView(object sender, RoutedEventArgs e)
+        private void ShowSplitView(object sender, RoutedEventArgs e)
         {
             MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
         }

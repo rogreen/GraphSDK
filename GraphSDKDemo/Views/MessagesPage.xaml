@@ -62,7 +62,7 @@
         <!--#region Navigation Panel -->
         <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
                 VerticalAlignment="Center"
-                Click="ShowSliptView" />
+                Click="ShowSplitView" />
         <TextBlock Text="Messages Sample"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"
