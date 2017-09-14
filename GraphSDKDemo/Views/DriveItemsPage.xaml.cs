@@ -102,7 +102,7 @@ namespace GraphSDKDemo
                         {
                             Id = file.Id,
                             Name = file.Name,
-                            Size=Convert.ToInt64(file.Size)
+                            Size = Convert.ToInt64(file.Size)
                         });
                     }
 
