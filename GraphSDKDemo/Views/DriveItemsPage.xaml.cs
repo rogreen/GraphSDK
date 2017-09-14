@@ -26,9 +26,9 @@ namespace GraphSDKDemo
         ObservableCollection<Models.File> MyFiles = null;
         ObservableCollection<Models.Folder> MyFolders = null;
 
-        Models.File myFile = null;
+        DriveItem myFile = null;
         Models.File selectedFile = null;
-        Models.Folder myFolder = null;
+        DriveItem myFolder = null;
         Models.Folder selectedFolder = null;
 
         string driveItemSubject = string.Empty;
@@ -44,11 +44,13 @@ namespace GraphSDKDemo
 
             FoldersListView.Visibility = Visibility.Visible;
             FilesListView.Visibility = Visibility.Collapsed;
+            FolderScrollViewer.Visibility = Visibility.Visible;
+            FileScrollViewer.Visibility = Visibility.Collapsed;
 
             try
             {
-                folders= await graphClient.Me.Drive.Root.Children.Request()
-                                             .Select("name,folder").Filter("file eq null").GetAsync();
+                folders = await graphClient.Me.Drive.Root.Children.Request()
+                                             .Select("id,name,folder").Filter("file eq null").GetAsync();
 
                 MyFolders = new ObservableCollection<Models.Folder>();
 
@@ -86,11 +88,23 @@ namespace GraphSDKDemo
 
             FilesListView.Visibility = Visibility.Visible;
             FoldersListView.Visibility = Visibility.Collapsed;
+            FileScrollViewer.Visibility = Visibility.Visible;
+            FolderScrollViewer.Visibility = Visibility.Collapsed;
 
             try
             {
-                files = await graphClient.Me.Drive.Root.Children.Request()
-                                            .Select("name,size").Filter("folder eq null").GetAsync();
+                if (FoldersListView.SelectedItem != null)
+                {
+                    selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
+
+                    files = await graphClient.Me.Drive.Items[selectedFolder.Id].Children.Request()
+                                             .Select("id,name,size").Filter("folder eq null").GetAsync();
+                }
+                else
+                {
+                    files = await graphClient.Me.Drive.Root.Children.Request()
+                                            .Select("id,name,size").Filter("folder eq null").GetAsync();
+                }
 
                 MyFiles = new ObservableCollection<Models.File>();
 
@@ -119,6 +133,43 @@ namespace GraphSDKDemo
             catch (ServiceException ex)
             {
                 DriveItemCountTextBlock.Text = $"We could not get files: {ex.Error.Message}";
+            }
+        }
+
+        private async void FoldersListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            graphClient = AuthenticationHelper.GetAuthenticatedClient();
+
+            if (FoldersListView.SelectedItem != null)
+            {
+                selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
+
+                myFolder = await graphClient.Me.Drive.Items[selectedFolder.Id].Request().GetAsync();
+
+                FolderNameTextBlock.Text = myFolder.Name;
+                FileCountTextBlock.Text = ((int)myFolder.Folder.ChildCount).ToString("N0");
+                FolderCreatedTextBlock.Text = myFolder.CreatedDateTime.GetValueOrDefault().ToString("d");
+                FolderLastModifiedTextBlock.Text = myFolder.LastModifiedDateTime.GetValueOrDefault().ToString("d");
+                FolderSharedTextBlock.Text = (myFolder.Shared != null) ? "Yes" : "No";
+                FolderHyperlinkButton.NavigateUri = new Uri(myFolder.WebUrl);
+            }
+        }
+
+        private async void FilesListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            graphClient = AuthenticationHelper.GetAuthenticatedClient();
+
+            if (FilesListView.SelectedItem != null)
+            {
+                selectedFile = ((Models.File)FilesListView.SelectedItem);
+
+                myFile = await graphClient.Me.Drive.Items[selectedFile.Id].Request().GetAsync();
+
+                FileNameTextBlock.Text = myFile.Name;
+                FileSizeTextBlock.Text = (Convert.ToInt64(myFile.Size)).ToString("N0");
+                FileCreatedTextBlock.Text = myFile.CreatedDateTime.GetValueOrDefault().ToString("d");
+                FileLastModifiedTextBlock.Text = myFile.LastModifiedDateTime.GetValueOrDefault().ToString("d");
+                FileSharedTextBlock.Text = (myFile.Shared != null) ? "Yes" : "No";
             }
         }
 
@@ -152,24 +203,10 @@ namespace GraphSDKDemo
 
         }
 
-        private async void EventsListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
         private void ShowSplitView(object sender, RoutedEventArgs e)
         {
             MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
         }
 
-        private void FoldersListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void FilesListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }

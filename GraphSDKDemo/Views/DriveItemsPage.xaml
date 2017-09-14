@@ -180,15 +180,16 @@
                       Visibility="Collapsed">
             </ListView>
 
-            <ScrollViewer Grid.Row="0"
+            <ScrollViewer x:Name="FolderScrollViewer"
+                          Grid.Row="0"
                           Grid.Column="1">
-                <!--<StackPanel>
+                <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="Subject:"
+                                   Text="Name:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="SubjectTextBlock"
+                        <TextBlock x:Name="FolderNameTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -197,9 +198,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="Location:"
+                                   Text="File count:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="LocationTextBlock"
+                        <TextBlock x:Name="FileCountTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -208,9 +209,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="Organizer:"
+                                   Text="Created:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="OrganizerTextBlock"
+                        <TextBlock x:Name="FolderCreatedTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -219,9 +220,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="Start:"
+                                   Text="Last modified:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="StartTextBlock"
+                        <TextBlock x:Name="FolderLastModifiedTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -230,9 +231,31 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="End:"
+                                   Text="Shared:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="EndTextBlock"
+                        <TextBlock x:Name="FolderSharedTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                    <HyperlinkButton x:Name="FolderHyperlinkButton"
+                                     Margin="10,0,0,0"
+                                     Content="View in browser" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer x:Name="FileScrollViewer"
+                          Grid.Row="0"
+                          Grid.Column="1"
+                          Visibility="Collapsed">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Name:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="FileNameTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -241,9 +264,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="All Day:"
+                                   Text="Size:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="AllDayTextBlock"
+                        <TextBlock x:Name="FileSizeTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -252,9 +275,9 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="Recurring:"
+                                   Text="Created:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="RecurringTextBlock"
+                        <TextBlock x:Name="FileCreatedTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
@@ -263,15 +286,26 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
-                                   Text="Categories:"
+                                   Text="Last modified:"
                                    VerticalAlignment="Top" />
-                        <TextBlock x:Name="CategoriesTextBlock"
+                        <TextBlock x:Name="FileLastModifiedTextBlock"
                                    HorizontalAlignment="Left"
                                    Margin="10,10,0,0"
                                    TextWrapping="Wrap"
                                    VerticalAlignment="Top" />
                     </StackPanel>
-                </StackPanel>-->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   Text="Shared:"
+                                   VerticalAlignment="Top" />
+                        <TextBlock x:Name="FileSharedTextBlock"
+                                   HorizontalAlignment="Left"
+                                   Margin="10,10,0,0"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Top" />
+                    </StackPanel>
+                </StackPanel>
             </ScrollViewer>
         </Grid>
 
