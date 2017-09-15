@@ -30,12 +30,6 @@ namespace GraphSDKDemo
 
             try
             {
-                //IUserEventsCollectionPage events =
-                //    await graphClient.Me.Events.Request()
-                //                               .Filter("start/datetime ge '2017-08-06'")
-                //                               .Select("subject,organizer,location,start,end").GetAsync();
-
-
                 var options = new List<QueryOption>
                 {
                     new QueryOption("startDateTime", DateTime.Today.ToString("o")),

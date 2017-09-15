@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 namespace GraphSDKDemo
@@ -31,7 +32,7 @@ namespace GraphSDKDemo
         DriveItem myFolder = null;
         Models.Folder selectedFolder = null;
 
-        string driveItemSubject = string.Empty;
+        Stream downloadedFile = null;
 
         public DriveItemsPage()
         {
@@ -46,6 +47,19 @@ namespace GraphSDKDemo
             FilesListView.Visibility = Visibility.Collapsed;
             FolderScrollViewer.Visibility = Visibility.Visible;
             FileScrollViewer.Visibility = Visibility.Collapsed;
+
+            // Clear the display of folder and file info when you change folders
+            FolderNameTextBlock.Text = string.Empty;
+            FileCountTextBlock.Text = string.Empty;
+            FolderCreatedTextBlock.Text = string.Empty;
+            FolderLastModifiedTextBlock.Text = string.Empty;
+            FolderSharedTextBlock.Text = string.Empty;
+            FileNameTextBlock.Text = string.Empty;
+            FileSizeTextBlock.Text = string.Empty;
+            FileCreatedTextBlock.Text = string.Empty;
+            FileLastModifiedTextBlock.Text = string.Empty;
+            FileSharedTextBlock.Text = string.Empty;
+            FileImage.Source = null;
 
             try
             {
@@ -98,12 +112,12 @@ namespace GraphSDKDemo
                     selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
 
                     files = await graphClient.Me.Drive.Items[selectedFolder.Id].Children.Request()
-                                             .Select("id,name,size").Filter("folder eq null").GetAsync();
+                                             .Select("id,name,size,weburl").Filter("folder eq null").GetAsync();
                 }
                 else
                 {
                     files = await graphClient.Me.Drive.Root.Children.Request()
-                                            .Select("id,name,size").Filter("folder eq null").GetAsync();
+                                            .Select("id,name,size,weburl").Filter("folder eq null").GetAsync();
                 }
 
                 MyFiles = new ObservableCollection<Models.File>();
@@ -116,7 +130,8 @@ namespace GraphSDKDemo
                         {
                             Id = file.Id,
                             Name = file.Name,
-                            Size = Convert.ToInt64(file.Size)
+                            Size = Convert.ToInt64(file.Size),
+                            Url=file.WebUrl
                         });
                     }
 
@@ -173,32 +188,52 @@ namespace GraphSDKDemo
             }
         }
 
+        private async void DisplayButton_Click(Object sender, RoutedEventArgs e)
+        {
+            graphClient = AuthenticationHelper.GetAuthenticatedClient();
+
+            try
+            {
+                downloadedFile = await graphClient.Me.Drive.Items[selectedFile.Id].Content.Request().GetAsync();
+
+                var memStream = new MemoryStream();
+
+                // Convert the stream to the memory stream, because a memory stream supports seeking.
+                await downloadedFile.CopyToAsync(memStream);
+
+                // Set the start position.
+                memStream.Position = 0;
+
+                // Create a new bitmap image.
+                var bitmap = new BitmapImage();
+
+                // Set the bitmap source to the stream, which is converted to a IRandomAccessStream.
+                bitmap.SetSource(memStream.AsRandomAccessStream());
+
+                // Set the image control source to the bitmap.
+                FileImage.Source = bitmap;
+
+            }
+            catch (Exception ex)
+            {
+                string wtf = ex.Message;
+            }
+        }
+
         private async void CheckFolderButton_Click(Object sender, RoutedEventArgs e)
         {
+            graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
+            var options = new List<QueryOption>
+                {
+                    new QueryOption("q","boston")
+                };
+
+            var result = await graphClient.Me.Drive.Root.Children.Request(options)
+                                             .Select("id,name,folder").Filter("file eq null").GetAsync();
         }
 
         private async void CheckFileButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async void CreateFolderButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async void CreateFileButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async void UpdateFileButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async void DeleteFileButton_Click(Object sender, RoutedEventArgs e)
         {
 
         }
@@ -207,6 +242,5 @@ namespace GraphSDKDemo
         {
             MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
         }
-
     }
 }
