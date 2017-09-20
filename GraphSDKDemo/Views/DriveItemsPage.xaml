@@ -110,16 +110,16 @@
                         Margin="10,0,0,0"
                         Width="150"
                         Click="GetFilesButton_Click" />
-                <Button x:Name="CheckFolderButton"
-                        Content="Check folder"
+                <Button x:Name="SearchFoldersButton"
+                        Content="Search folders"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="CheckFolderButton_Click" />
-                <Button x:Name="CheckFileButton"
-                        Content="Check file"
+                        Click="SearchFoldersButton_Click" />
+                <Button x:Name="SearchFilesButton"
+                        Content="Search files"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="CheckFileButton_Click" />
+                        Click="SearchFilesButton_Click" />
             </StackPanel>
             <TextBlock x:Name="DriveItemCountTextBlock"
                        Margin="10,10,0,0"

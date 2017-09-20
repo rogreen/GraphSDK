@@ -12,7 +12,9 @@ namespace GraphSDKDemo
     {
         GraphServiceClient graphClient = null;
 
-        ObservableCollection<Models.Event> MyEvents = null;
+        ICalendarCalendarViewCollectionPage calendar = null;
+
+        ObservableCollection <Models.Event> MyEvents = null;
 
         Event myEvent = null;
         Models.Event selectedEvent = null;
@@ -35,10 +37,9 @@ namespace GraphSDKDemo
                     new QueryOption("startDateTime", DateTime.Today.ToString("o")),
                     new QueryOption("endDateTime", DateTime.Today.AddDays(7).ToString("o"))
                 };
-                ICalendarCalendarViewCollectionPage calendar =
-                    await graphClient.Me.Calendar.CalendarView.Request(options)
-                                                              .Select("subject,organizer,location,start,end")
-                                                              .GetAsync();
+                calendar = await graphClient.Me.Calendar.CalendarView.Request(options)
+                                            .Select("subject,organizer,location,start,end")
+                                            .GetAsync();
 
                 MyEvents = new ObservableCollection<Models.Event>();
 
@@ -79,10 +80,9 @@ namespace GraphSDKDemo
                     new QueryOption("startDateTime", DateTime.Today.ToString("o")),
                     new QueryOption("endDateTime", DateTime.Today.AddDays(1).ToString("o"))
                 };
-                ICalendarCalendarViewCollectionPage calendar =
-                    await graphClient.Me.Calendar.CalendarView.Request(options)
-                                                              .Select("subject,organizer,location,start,end")
-                                                              .GetAsync();
+                calendar = await graphClient.Me.Calendar.CalendarView.Request(options)
+                                            .Select("subject,organizer,location,start,end")
+                                            .GetAsync();
 
                 MyEvents = new ObservableCollection<Models.Event>();
 
@@ -125,10 +125,9 @@ namespace GraphSDKDemo
                     new QueryOption("startDateTime", DateTime.Now.ToString("o")),
                     new QueryOption("endDateTime", DateTime.Now.AddDays(14).ToString("o"))
                 };
-                ICalendarCalendarViewCollectionPage calendar =
-                    await graphClient.Me.Calendar.CalendarView.Request(options)
-                                                              .Filter("categories/any(categories: categories eq 'Birthday')")
-                                                              .Select("subject,start,categories").GetAsync();
+                calendar = await graphClient.Me.Calendar.CalendarView.Request(options)
+                                            .Filter("categories/any(categories: categories eq 'Birthday')")
+                                            .Select("subject,start,categories").GetAsync();
 
                 MyEvents = new ObservableCollection<Models.Event>();
 
@@ -174,8 +173,10 @@ namespace GraphSDKDemo
                                            $"{myEvent.Organizer.EmailAddress.Name}\n" +
                                            $"{myEvent.Organizer.EmailAddress.Address}" :
                                            "Unknown organizer";
-                StartTextBlock.Text = DateTime.Parse(myEvent.Start.DateTime).ToLocalTime().ToString();
-                EndTextBlock.Text = DateTime.Parse(myEvent.End.DateTime).ToLocalTime().ToString();
+                StartTextBlock.Text = 
+                    DateTime.Parse(myEvent.Start.DateTime).ToLocalTime().ToString();
+                EndTextBlock.Text = 
+                    DateTime.Parse(myEvent.End.DateTime).ToLocalTime().ToString();
                 AllDayTextBlock.Text = (myEvent.IsAllDay == true) ? "Yes" : "No";
                 RecurringTextBlock.Text = (myEvent.Recurrence != null) ? "Yes" : "No";
 
@@ -222,12 +223,14 @@ namespace GraphSDKDemo
 
             var eventStartTime = new DateTimeTimeZone()
             {
-                DateTime = new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 9, 0, 0).ToString("o"),
+                DateTime = 
+                new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 9, 0, 0).ToString("o"),
                 TimeZone = "America/Los_Angeles"
             };
             var eventEndTime = new DateTimeTimeZone()
             {
-                DateTime = new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 10, 0, 0).ToString("o"),
+                DateTime = 
+                new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 10, 0, 0).ToString("o"),
                 TimeZone = "America/Los_Angeles"
             };
 
@@ -262,7 +265,8 @@ namespace GraphSDKDemo
             };
             try
             {
-                await graphClient.Me.Events[selectedEvent.Id].Request().UpdateAsync(eventToUpdate);
+                await graphClient.Me.Events[selectedEvent.Id].Request()
+                                 .UpdateAsync(eventToUpdate);
             }
             catch (ServiceException ex)
             {

@@ -32,7 +32,7 @@ namespace GraphSDKDemo
                 //contacts = await graphClient.Me.Contacts.Request().GetAsync();
                 // contacts = await graphClient.Me.Contacts.Request().OrderBy("displayName").GetAsync();
                 contacts = await graphClient.Me.Contacts.Request().OrderBy("displayName")
-                                                        .Select("displayName,emailAddresses").GetAsync();
+                                            .Select("displayName,emailAddresses").GetAsync();
 
                 MyContacts = new ObservableCollection<Models.Contact>();
 
@@ -77,7 +77,8 @@ namespace GraphSDKDemo
                 // Note: This api does not support using a filter, 
                 // so you can only get a particular contact via the Id
 
-                myContact = await graphClient.Me.Contacts[selectedContact.Id].Request().GetAsync();
+                myContact = await graphClient.Me.Contacts[selectedContact.Id]
+                                             .Request().GetAsync();
 
                 DisplayNameTextBlock.Text = (myContact.DisplayName != string.Empty) ?
                                              myContact.DisplayName :
@@ -103,7 +104,9 @@ namespace GraphSDKDemo
 
             try
             {
-                var updatedContact = await graphClient.Me.Contacts[selectedContact.Id].Request().UpdateAsync(contactToUpdate);
+                var updatedContact = await graphClient.Me.Contacts[selectedContact.Id]
+                                                      .Request()
+                                                      .UpdateAsync(contactToUpdate);
             }
             catch (ServiceException ex)
             {
@@ -142,7 +145,8 @@ namespace GraphSDKDemo
 
             try
             {
-                var updatedContact = await graphClient.Me.Contacts.Request().AddAsync(contactToAdd);
+                var updatedContact = await graphClient.Me.Contacts.Request()
+                                                      .AddAsync(contactToAdd);
             }
             catch (ServiceException ex)
             {

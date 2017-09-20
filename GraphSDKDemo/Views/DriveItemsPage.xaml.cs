@@ -1,20 +1,11 @@
 ﻿using Microsoft.Graph;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 namespace GraphSDKDemo
 {
@@ -26,6 +17,8 @@ namespace GraphSDKDemo
         IDriveItemChildrenCollectionPage folders = null;
         ObservableCollection<Models.File> MyFiles = null;
         ObservableCollection<Models.Folder> MyFolders = null;
+
+        IDriveItemSearchCollectionPage searchedItems = null;
 
         DriveItem myFile = null;
         Models.File selectedFile = null;
@@ -43,28 +36,14 @@ namespace GraphSDKDemo
         {
             graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
-            FoldersListView.Visibility = Visibility.Visible;
-            FilesListView.Visibility = Visibility.Collapsed;
-            FolderScrollViewer.Visibility = Visibility.Visible;
-            FileScrollViewer.Visibility = Visibility.Collapsed;
-
-            // Clear the display of folder and file info when you change folders
-            FolderNameTextBlock.Text = string.Empty;
-            FileCountTextBlock.Text = string.Empty;
-            FolderCreatedTextBlock.Text = string.Empty;
-            FolderLastModifiedTextBlock.Text = string.Empty;
-            FolderSharedTextBlock.Text = string.Empty;
-            FileNameTextBlock.Text = string.Empty;
-            FileSizeTextBlock.Text = string.Empty;
-            FileCreatedTextBlock.Text = string.Empty;
-            FileLastModifiedTextBlock.Text = string.Empty;
-            FileSharedTextBlock.Text = string.Empty;
-            FileImage.Source = null;
+            ShowFolders();
+            ClearFoldersAndFiles();
 
             try
             {
                 folders = await graphClient.Me.Drive.Root.Children.Request()
-                                             .Select("id,name,folder").Filter("file eq null").GetAsync();
+                                              .Select("id,name,folder")
+                                              .Filter("file eq null").GetAsync();
 
                 MyFolders = new ObservableCollection<Models.Folder>();
 
@@ -100,10 +79,7 @@ namespace GraphSDKDemo
         {
             graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
-            FilesListView.Visibility = Visibility.Visible;
-            FoldersListView.Visibility = Visibility.Collapsed;
-            FileScrollViewer.Visibility = Visibility.Visible;
-            FolderScrollViewer.Visibility = Visibility.Collapsed;
+            ShowFiles();
 
             try
             {
@@ -111,13 +87,16 @@ namespace GraphSDKDemo
                 {
                     selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
 
-                    files = await graphClient.Me.Drive.Items[selectedFolder.Id].Children.Request()
-                                             .Select("id,name,size,weburl").Filter("folder eq null").GetAsync();
+                    files = await graphClient.Me.Drive.Items[selectedFolder.Id]
+                                             .Children.Request()
+                                             .Select("id,name,size,weburl")
+                                             .Filter("folder eq null").GetAsync();
                 }
                 else
                 {
                     files = await graphClient.Me.Drive.Root.Children.Request()
-                                            .Select("id,name,size,weburl").Filter("folder eq null").GetAsync();
+                                            .Select("id,name,size,weburl")
+                                            .Filter("folder eq null").GetAsync();
                 }
 
                 MyFiles = new ObservableCollection<Models.File>();
@@ -131,7 +110,7 @@ namespace GraphSDKDemo
                             Id = file.Id,
                             Name = file.Name,
                             Size = Convert.ToInt64(file.Size),
-                            Url=file.WebUrl
+                            Url = file.WebUrl
                         });
                     }
 
@@ -159,12 +138,16 @@ namespace GraphSDKDemo
             {
                 selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
 
-                myFolder = await graphClient.Me.Drive.Items[selectedFolder.Id].Request().GetAsync();
+                myFolder = await graphClient.Me.Drive.Items[selectedFolder.Id]
+                                            .Request().GetAsync();
 
                 FolderNameTextBlock.Text = myFolder.Name;
-                FileCountTextBlock.Text = ((int)myFolder.Folder.ChildCount).ToString("N0");
-                FolderCreatedTextBlock.Text = myFolder.CreatedDateTime.GetValueOrDefault().ToString("d");
-                FolderLastModifiedTextBlock.Text = myFolder.LastModifiedDateTime.GetValueOrDefault().ToString("d");
+                FileCountTextBlock.Text = 
+                    ((int)myFolder.Folder.ChildCount).ToString("N0");
+                FolderCreatedTextBlock.Text = 
+                    myFolder.CreatedDateTime.GetValueOrDefault().ToString("d");
+                FolderLastModifiedTextBlock.Text = 
+                    myFolder.LastModifiedDateTime.GetValueOrDefault().ToString("d");
                 FolderSharedTextBlock.Text = (myFolder.Shared != null) ? "Yes" : "No";
                 FolderHyperlinkButton.NavigateUri = new Uri(myFolder.WebUrl);
             }
@@ -178,12 +161,15 @@ namespace GraphSDKDemo
             {
                 selectedFile = ((Models.File)FilesListView.SelectedItem);
 
-                myFile = await graphClient.Me.Drive.Items[selectedFile.Id].Request().GetAsync();
+                myFile = await graphClient.Me.Drive.Items[selectedFile.Id]
+                                          .Request().GetAsync();
 
                 FileNameTextBlock.Text = myFile.Name;
                 FileSizeTextBlock.Text = (Convert.ToInt64(myFile.Size)).ToString("N0");
-                FileCreatedTextBlock.Text = myFile.CreatedDateTime.GetValueOrDefault().ToString("d");
-                FileLastModifiedTextBlock.Text = myFile.LastModifiedDateTime.GetValueOrDefault().ToString("d");
+                FileCreatedTextBlock.Text = 
+                    myFile.CreatedDateTime.GetValueOrDefault().ToString("d");
+                FileLastModifiedTextBlock.Text = 
+                    myFile.LastModifiedDateTime.GetValueOrDefault().ToString("d");
                 FileSharedTextBlock.Text = (myFile.Shared != null) ? "Yes" : "No";
             }
         }
@@ -194,7 +180,8 @@ namespace GraphSDKDemo
 
             try
             {
-                downloadedFile = await graphClient.Me.Drive.Items[selectedFile.Id].Content.Request().GetAsync();
+                downloadedFile = await graphClient.Me.Drive.Items[selectedFile.Id]
+                                                  .Content.Request().GetAsync();
 
                 var memStream = new MemoryStream();
 
@@ -220,22 +207,109 @@ namespace GraphSDKDemo
             }
         }
 
-        private async void CheckFolderButton_Click(Object sender, RoutedEventArgs e)
+        private async void SearchFoldersButton_Click(Object sender, RoutedEventArgs e)
         {
             graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
-            var options = new List<QueryOption>
-                {
-                    new QueryOption("q","boston")
-                };
+            ShowFolders();
 
-            var result = await graphClient.Me.Drive.Root.Children.Request(options)
-                                             .Select("id,name,folder").Filter("file eq null").GetAsync();
+            try
+            {
+                searchedItems = await graphClient.Me.Drive.Root
+                                                 .Search("tax").Request().GetAsync();
+
+                MyFolders = new ObservableCollection<Models.Folder>();
+
+                foreach (var item in searchedItems)
+                {
+                    if (item.Folder != null)
+                    {
+                        MyFolders.Add(new Models.Folder
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            FileCount = (int)item.Folder.ChildCount
+                        });
+                    }
+                }
+
+                DriveItemCountTextBlock.Text = $"You have {MyFolders.Count()} folders";
+                FoldersListView.ItemsSource = MyFolders;
+            }
+            catch (ServiceException ex)
+            {
+                DriveItemCountTextBlock.Text = $"We could not get folders: {ex.Error.Message}";
+            }
         }
 
-        private async void CheckFileButton_Click(Object sender, RoutedEventArgs e)
+        private async void SearchFilesButton_Click(Object sender, RoutedEventArgs e)
         {
+            graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
+            ShowFiles();
+
+            try
+            {
+                if (FoldersListView.SelectedItem != null)
+                {
+                    selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
+
+                    searchedItems = await graphClient.Me.Drive.Items[selectedFolder.Id]
+                                                     .Search("Direct Deposit")
+                                                     .Request().GetAsync();
+                }
+
+                MyFiles = new ObservableCollection<Models.File>();
+
+                foreach (var file in searchedItems)
+                {
+                    MyFiles.Add(new Models.File
+                    {
+                        Id = file.Id,
+                        Name = file.Name,
+                        Size = Convert.ToInt64(file.Size),
+                        Url = file.WebUrl
+                    });
+                }
+
+                DriveItemCountTextBlock.Text = $"You have {MyFiles.Count()} files";
+                FilesListView.ItemsSource = MyFiles;
+            }
+            catch (ServiceException ex)
+            {
+                DriveItemCountTextBlock.Text = $"We could not get files: {ex.Error.Message}";
+            }
+        }
+
+        private void ShowFolders()
+        {
+            FoldersListView.Visibility = Visibility.Visible;
+            FilesListView.Visibility = Visibility.Collapsed;
+            FolderScrollViewer.Visibility = Visibility.Visible;
+            FileScrollViewer.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowFiles()
+        {
+            FilesListView.Visibility = Visibility.Visible;
+            FoldersListView.Visibility = Visibility.Collapsed;
+            FileScrollViewer.Visibility = Visibility.Visible;
+            FolderScrollViewer.Visibility = Visibility.Collapsed;
+        }
+
+        private void ClearFoldersAndFiles()
+        {
+            FolderNameTextBlock.Text = string.Empty;
+            FileCountTextBlock.Text = string.Empty;
+            FolderCreatedTextBlock.Text = string.Empty;
+            FolderLastModifiedTextBlock.Text = string.Empty;
+            FolderSharedTextBlock.Text = string.Empty;
+            FileNameTextBlock.Text = string.Empty;
+            FileSizeTextBlock.Text = string.Empty;
+            FileCreatedTextBlock.Text = string.Empty;
+            FileLastModifiedTextBlock.Text = string.Empty;
+            FileSharedTextBlock.Text = string.Empty;
+            FileImage.Source = null;
         }
 
         private void ShowSplitView(object sender, RoutedEventArgs e)

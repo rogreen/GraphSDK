@@ -15,6 +15,9 @@ namespace GraphSDKDemo
         MailFolder inbox = null;
         ObservableCollection<Models.Message> MyMessages = null;
 
+        IUserMessagesCollectionPage userMessages = null;
+        IMailFolderMessagesCollectionPage folderMessages = null;
+
         Message myMessage = null;
         Models.Message selectedMessage = null;
 
@@ -30,13 +33,13 @@ namespace GraphSDKDemo
             try
             {
                 inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
-                IUserMessagesCollectionPage messages =
-                    await graphClient.Me.Messages.Request().Top(20)
-                                                 .Select("sender,from, subject, importance").GetAsync();
+                userMessages = await graphClient.Me.Messages.Request().Top(20)
+                                                .Select("sender,from, subject, importance")
+                                                .GetAsync();
 
                 MyMessages = new ObservableCollection<Models.Message>();
 
-                foreach (var message in messages)
+                foreach (var message in userMessages)
                 {
                     MyMessages.Add(new Models.Message
                     {
@@ -70,12 +73,12 @@ namespace GraphSDKDemo
             try
             {
                 inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
-                IMailFolderMessagesCollectionPage messages =
-                    await graphClient.Me.MailFolders.Inbox.Messages.Request().Top(20).GetAsync();
+                folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
+                                                  .Top(20).GetAsync();
 
                 MyMessages = new ObservableCollection<Models.Message>();
 
-                foreach (var message in messages)
+                foreach (var message in folderMessages)
                 {
                     MyMessages.Add(new Models.Message
                     {
@@ -108,12 +111,12 @@ namespace GraphSDKDemo
 
             try
             {
-                IMailFolderMessagesCollectionPage messages =
-                    await graphClient.Me.MailFolders.Inbox.Messages.Request().Filter("importance eq 'high'").GetAsync();
+                folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
+                                                  .Filter("importance eq 'high'").GetAsync();
 
                 MyMessages = new ObservableCollection<Models.Message>();
 
-                foreach (var message in messages)
+                foreach (var message in folderMessages)
                 {
                     MyMessages.Add(new Models.Message
                     {
@@ -145,13 +148,14 @@ namespace GraphSDKDemo
 
             try
             {
-                IMailFolderMessagesCollectionPage messages =
-                    await graphClient.Me.MailFolders.Inbox.Messages.Request().
-                    Filter("importance eq 'high' and sender/emailaddress/address eq 'rogreen@microsoft.com'").GetAsync();
+                string filter = "importance eq 'high' " +
+                                "and sender/emailaddress/address eq 'rogreen@microsoft.com'";
+                folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
+                                                  .Filter(filter).GetAsync();
 
                 MyMessages = new ObservableCollection<Models.Message>();
 
-                foreach (var message in messages)
+                foreach (var message in folderMessages)
                 {
                     MyMessages.Add(new Models.Message
                     {
@@ -184,7 +188,8 @@ namespace GraphSDKDemo
             {
                 selectedMessage = ((Models.Message)MessagesListView.SelectedItem);
 
-                myMessage = await graphClient.Me.Messages[selectedMessage.Id].Request().GetAsync();
+                myMessage = await graphClient.Me.Messages[selectedMessage.Id]
+                                             .Request().GetAsync();
 
                 SenderTextBlock.Text = (myMessage.Sender != null) ?
                                         myMessage.Sender.EmailAddress.Name :
@@ -245,7 +250,8 @@ namespace GraphSDKDemo
 
             try
             {
-                await graphClient.Me.Messages[selectedMessage.Id].Reply(replyText).Request().PostAsync();
+                await graphClient.Me.Messages[selectedMessage.Id].Reply(replyText)
+                                 .Request().PostAsync();
             }
             catch (ServiceException ex)
             {
@@ -271,7 +277,8 @@ namespace GraphSDKDemo
 
             try
             {
-                await graphClient.Me.Messages[selectedMessage.Id].Forward(forwardText, recipients).Request().PostAsync();
+                await graphClient.Me.Messages[selectedMessage.Id]
+                                 .Forward(forwardText, recipients).Request().PostAsync();
             }
             catch (ServiceException ex)
             {
