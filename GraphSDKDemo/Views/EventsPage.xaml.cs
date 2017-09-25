@@ -225,13 +225,13 @@ namespace GraphSDKDemo
             {
                 DateTime = 
                 new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 9, 0, 0).ToString("o"),
-                TimeZone = "America/Los_Angeles"
+                TimeZone = "Pacific Standard Time"
             };
             var eventEndTime = new DateTimeTimeZone()
             {
                 DateTime = 
                 new DateTime(eventDay.Year, eventDay.Month, eventDay.Day, 10, 0, 0).ToString("o"),
-                TimeZone = "America/Los_Angeles"
+                TimeZone = "Pacific Standard Time"
             };
 
             //Create an event to add to the events collection

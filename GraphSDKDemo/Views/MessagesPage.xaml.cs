@@ -32,7 +32,7 @@ namespace GraphSDKDemo
 
             try
             {
-                inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
+                // Get all messages, whether or not they are in the Inbox
                 userMessages = await graphClient.Me.Messages.Request().Top(20)
                                                 .Select("sender,from, subject, importance")
                                                 .GetAsync();
@@ -68,11 +68,11 @@ namespace GraphSDKDemo
         private async void GetInboxMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
             graphClient = AuthenticationHelper.GetAuthenticatedClient();
-            string inboxId = string.Empty;
 
             try
             {
-                inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
+                // Get only messages from my Inbox
+                //inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
                 folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
                                                   .Top(20).GetAsync();
 
@@ -107,7 +107,6 @@ namespace GraphSDKDemo
         private async void GetHighImportanceMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
             graphClient = AuthenticationHelper.GetAuthenticatedClient();
-            string inboxId = string.Empty;
 
             try
             {
@@ -144,7 +143,6 @@ namespace GraphSDKDemo
         private async void GetRogreenHighImportanceMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
             graphClient = AuthenticationHelper.GetAuthenticatedClient();
-            string inboxId = string.Empty;
 
             try
             {
