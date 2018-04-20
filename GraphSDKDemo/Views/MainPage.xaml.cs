@@ -21,6 +21,7 @@ namespace GraphSDKDemo
             GraphServiceClient graphClient = AuthenticationHelper.GetAuthenticatedClient();
 
             var currentUser = await graphClient.Me.Request().GetAsync();
+
             UserNameTextBlock.Text = $"Welcome {currentUser.DisplayName}";
         }
 

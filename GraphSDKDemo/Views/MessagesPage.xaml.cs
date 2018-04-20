@@ -55,8 +55,8 @@ namespace GraphSDKDemo
                     });
                 }
 
-                MessageCountTextBlock.Text = $"You have {inbox.TotalItemCount} messages, " +
-                    $"{inbox.UnreadItemCount} of them are unread. Here are the first 20:";
+                MessageCountTextBlock.Text = $"You have {userMessages.Count()} messages. " +
+                    "Here are the first 20:";
                 MessagesListView.ItemsSource = MyMessages;
             }
             catch (ServiceException ex)
@@ -72,7 +72,7 @@ namespace GraphSDKDemo
             try
             {
                 // Get only messages from my Inbox
-                //inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
+                inbox = await graphClient.Me.MailFolders.Inbox.Request().GetAsync();
                 folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
                                                   .Top(20).GetAsync();
 
