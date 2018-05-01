@@ -34,7 +34,7 @@ namespace GraphSDKDemo
             {
                 // Get all messages, whether or not they are in the Inbox
                 userMessages = await graphClient.Me.Messages.Request().Top(20)
-                                                .Select("sender,from, subject, importance")
+                                                .Select("sender, from, subject, importance")
                                                 .GetAsync();
 
                 MyMessages = new ObservableCollection<Models.Message>();
