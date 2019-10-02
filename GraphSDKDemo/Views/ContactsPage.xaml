@@ -1,39 +1,10 @@
 ﻿<Page x:Class="GraphSDKDemo.ContactsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:GraphSDKDemo"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:data="using:GraphSDKDemo.Models"
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
       mc:Ignorable="d">
-
-    <Page.Resources>
-        <!-- When using x:Bind, you need to set x:DataType -->
-        <DataTemplate x:Name="ContactListViewTemplate"
-                      x:DataType="data:Contact">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="1"
-                           Text="{x:Bind DisplayName}"
-                           x:Phase="1"
-                           Style="{ThemeResource BaseTextBlockStyle}"
-                           Margin="12,6,0,0" />
-                <TextBlock  Grid.Column="1"
-                            Grid.Row="1"
-                            Text="{x:Bind EmailAddress}"
-                            x:Phase="2"
-                            Style="{ThemeResource BodyTextBlockStyle}"
-                            Margin="12,0,0,6" />
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -47,12 +18,10 @@
         </Grid.ColumnDefinitions>
 
         <!--#region Navigation Panel -->
-        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
-                VerticalAlignment="Center"
-                Click="ShowSplitView" />
         <TextBlock Text="Contacts Sample"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"
+                   Margin="0,0,0,20"
                    Grid.Column="1" />
         <!--#endregion-->
 
@@ -96,30 +65,27 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ListView x:Name="ContactsListView"
-                      ItemsSource="{x:Bind MyContacts}"
-                      ItemTemplate="{StaticResource ContactListViewTemplate}"
-                      SelectionMode="Single"
-                      ShowsScrollingPlaceholders="True"
-                      Grid.Row="0"
-                      Grid.Column="0"
-                      Margin="-10,10,0,0"
-                      SelectionChanged="ContactsListView_SelectionChanged">
-
-                <!--<ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate x:DataType="data:GroupInfoList">
-                            <TextBlock Text="{x:Bind Key}"
-                                       Style="{ThemeResource TitleTextBlockStyle}" />
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ListView.GroupStyle>-->
-            </ListView>
+            <controls:DataGrid x:Name="ContactsDataGrid" 
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Margin="-10,10,0,0"
+                               AutoGenerateColumns="False" 
+                               SelectionChanged="ContactsDataGrid_SelectionChanged">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn
+                        Header="Contact"
+                        Width="SizeToCells"
+                        Binding="{Binding DisplayName}"/>
+                    <!--<controls:DataGridTextColumn
+                        Header="Email"
+                        Width="SizeToCells"
+                        Binding="{Binding EmailAddress}"/>-->
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
 
             <StackPanel Grid.Row="0"
-                        Grid.Column="1">
+                        Grid.Column="1"
+                        Margin="20,0,0,0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock HorizontalAlignment="Left"
                                Margin="10,10,0,0"
@@ -210,10 +176,6 @@
                 </StackPanel>
             </StackPanel>
 
-
         </Grid>
-        <local:SamplesPane x:Name="MySamplesPane"
-                           Grid.ColumnSpan="2"
-                           Grid.RowSpan="3" />
     </Grid>
 </Page>

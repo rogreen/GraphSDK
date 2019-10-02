@@ -1,7 +1,6 @@
 ﻿<Page x:Class="GraphSDKDemo.DriveItemsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:GraphSDKDemo"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:data="using:GraphSDKDemo.Models"
@@ -88,12 +87,10 @@
         </Grid.ColumnDefinitions>
 
         <!--#region Navigation Panel -->
-        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
-                VerticalAlignment="Center"
-                Click="ShowSplitView" />
         <TextBlock Text="DriveItems Sample"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"
+                   Margin="0,0,0,20"
                    Grid.Column="1" />
         <!--#endregion-->
 
@@ -293,10 +290,6 @@
 
             </StackPanel>
         </Grid>
-
-        <local:SamplesPane x:Name="MySamplesPane"
-                           Grid.ColumnSpan="2"
-                           Grid.RowSpan="3" />
     </Grid>
 
 </Page>

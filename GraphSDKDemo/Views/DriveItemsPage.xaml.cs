@@ -30,12 +30,12 @@ namespace GraphSDKDemo
         public DriveItemsPage()
         {
             this.InitializeComponent();
+
+            graphClient = (App.Current as App).GraphClient;
         }
 
         private async void GetFoldersButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             ShowFolders();
             ClearFoldersAndFiles();
 
@@ -77,8 +77,6 @@ namespace GraphSDKDemo
 
         private async void GetFilesButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             ShowFiles();
 
             try
@@ -132,8 +130,6 @@ namespace GraphSDKDemo
 
         private async void FoldersListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             if (FoldersListView.SelectedItem != null)
             {
                 selectedFolder = ((Models.Folder)FoldersListView.SelectedItem);
@@ -155,8 +151,6 @@ namespace GraphSDKDemo
 
         private async void FilesListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             if (FilesListView.SelectedItem != null)
             {
                 selectedFile = ((Models.File)FilesListView.SelectedItem);
@@ -176,8 +170,6 @@ namespace GraphSDKDemo
 
         private async void DisplayButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 downloadedFile = await graphClient.Me.Drive.Items[selectedFile.Id]
@@ -209,8 +201,6 @@ namespace GraphSDKDemo
 
         private async void SearchFoldersButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             ShowFolders();
 
             try
@@ -244,8 +234,6 @@ namespace GraphSDKDemo
 
         private async void SearchFilesButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             ShowFiles();
 
             try
@@ -312,9 +300,5 @@ namespace GraphSDKDemo
             FileImage.Source = null;
         }
 
-        private void ShowSplitView(object sender, RoutedEventArgs e)
-        {
-            MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
-        }
-    }
+   }
 }

@@ -21,18 +21,21 @@ namespace GraphSDKDemo
         public ContactsPage()
         {
             this.InitializeComponent();
+
+            graphClient = (App.Current as App).GraphClient;
         }
 
         private async void GetContactsButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
-                //contacts = await graphClient.Me.Contacts.Request().GetAsync();
+                //contacts = await graphClient.Me.Contacts.Request().Top(20).GetAsync();
                 // contacts = await graphClient.Me.Contacts.Request().OrderBy("displayName").GetAsync();
                 contacts = await graphClient.Me.Contacts.Request().OrderBy("displayName")
                                             .Select("displayName,emailAddresses").GetAsync();
+                //contacts = await graphClient.Me.Contacts.Request()
+                //                            .Filter("startswith(displayName,'A'")
+                //                            .Select("displayName,emailAddresses").GetAsync();
 
                 MyContacts = new ObservableCollection<Models.Contact>();
 
@@ -40,27 +43,29 @@ namespace GraphSDKDemo
                 {
                     foreach (var contact in contacts)
                     {
-                        MyContacts.Add(new Models.Contact
+                        if (contact.DisplayName.StartsWith("A"))
                         {
-                            Id = contact.Id,
-                            DisplayName = (contact.DisplayName != string.Empty) ?
-                                          contact.DisplayName :
-                                          "Unknown name",
-                            EmailAddress = (contact.EmailAddresses.Count() > 0) ?
-                                           $"{contact.EmailAddresses.First().Address}" :
-                                           "Unknown email",
-                        });
+                            MyContacts.Add(new Models.Contact
+                            {
+                                Id = contact.Id,
+                                DisplayName = contact.DisplayName,
+                                EmailAddress = (contact.EmailAddresses.Count() > 0) ?
+                                               $"{contact.EmailAddresses.First().Address}" :
+                                               "Unknown email",
+                            });
+                        }
                     }
 
-                    if (contacts.NextPageRequest == null)
-                    {
-                        break;
-                    }
+                    if (MyContacts.Count() >= 20) { break; }
+
+                    if (contacts.NextPageRequest == null) { break; }
+
                     contacts = await contacts.NextPageRequest.GetAsync();
                 }
 
-                ContactCountTextBlock.Text = $"You have {MyContacts.Count()} contacts";
-                ContactsListView.ItemsSource = MyContacts;
+                ContactCountTextBlock.Text = $"Here are your first {MyContacts.Count()} contacts that start with A";
+                ContactsDataGrid.ItemsSource = MyContacts;
+
             }
             catch (ServiceException ex)
             {
@@ -68,11 +73,11 @@ namespace GraphSDKDemo
             }
         }
 
-        private async void ContactsListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
+        private async void ContactsDataGrid_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            if (ContactsListView.SelectedItem != null)
+            if (ContactsDataGrid.SelectedItem != null)
             {
-                selectedContact = ((Models.Contact)ContactsListView.SelectedItem);
+                selectedContact = ((Models.Contact)ContactsDataGrid.SelectedItem);
 
                 // Note: This api does not support using a filter, 
                 // so you can only get a particular contact via the Id
@@ -166,9 +171,5 @@ namespace GraphSDKDemo
             }
         }
 
-        private void ShowSplitView(object sender, RoutedEventArgs e)
-        {
-            MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
-        }
     }
 }

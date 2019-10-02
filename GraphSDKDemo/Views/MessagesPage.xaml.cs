@@ -24,15 +24,18 @@ namespace GraphSDKDemo
         public MessagesPage()
         {
             this.InitializeComponent();
+
+            graphClient = (App.Current as App).GraphClient;
         }
 
         private async void GetMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 // Get all messages, whether or not they are in the Inbox
+                //userMessages = await graphClient.Me.Messages.Request().Top(20)
+                //                                .Select("sender, from, subject, importance")
+                //                                .GetAsync();
                 userMessages = await graphClient.Me.Messages.Request().Top(20)
                                                 .Select("sender, from, subject, importance")
                                                 .GetAsync();
@@ -55,9 +58,8 @@ namespace GraphSDKDemo
                     });
                 }
 
-                MessageCountTextBlock.Text = $"You have {userMessages.Count()} messages. " +
-                    "Here are the first 20:";
-                MessagesListView.ItemsSource = MyMessages;
+                MessageCountTextBlock.Text = "Here are your first 20 email messages.";
+                MessagesDataGrid.ItemsSource = MyMessages;
             }
             catch (ServiceException ex)
             {
@@ -67,8 +69,6 @@ namespace GraphSDKDemo
 
         private async void GetInboxMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 // Get only messages from my Inbox
@@ -96,7 +96,7 @@ namespace GraphSDKDemo
 
                 MessageCountTextBlock.Text = $"You have {inbox.TotalItemCount} messages, " +
                     $"{inbox.UnreadItemCount} of them are unread. Here are the first 20:";
-                MessagesListView.ItemsSource = MyMessages;
+                MessagesDataGrid.ItemsSource = MyMessages;
             }
             catch (ServiceException ex)
             {
@@ -106,8 +106,6 @@ namespace GraphSDKDemo
 
         private async void GetHighImportanceMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
@@ -132,7 +130,7 @@ namespace GraphSDKDemo
                 }
 
                 MessageCountTextBlock.Text = $"You have {MyMessages.Count()} red bang messages:";
-                MessagesListView.ItemsSource = MyMessages;
+                MessagesDataGrid.ItemsSource = MyMessages;
             }
             catch (ServiceException ex)
             {
@@ -142,8 +140,6 @@ namespace GraphSDKDemo
 
         private async void GetRogreenHighImportanceMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 string filter = "importance eq 'high' " +
@@ -170,7 +166,7 @@ namespace GraphSDKDemo
                 }
 
                 MessageCountTextBlock.Text = $"You have {MyMessages.Count()} red bang messages:";
-                MessagesListView.ItemsSource = MyMessages;
+                MessagesDataGrid.ItemsSource = MyMessages;
             }
             catch (ServiceException ex)
             {
@@ -178,13 +174,11 @@ namespace GraphSDKDemo
             }
         }
 
-        private async void MessagesListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
+        private async void MessagesDataGrid_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
-            if (MessagesListView.SelectedItem != null)
+            if (MessagesDataGrid.SelectedItem != null)
             {
-                selectedMessage = ((Models.Message)MessagesListView.SelectedItem);
+                selectedMessage = ((Models.Message)MessagesDataGrid.SelectedItem);
 
                 myMessage = await graphClient.Me.Messages[selectedMessage.Id]
                                              .Request().GetAsync();
@@ -208,8 +202,6 @@ namespace GraphSDKDemo
 
         private async void SendMessageButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             var recipients = new List<Recipient>();
             recipients.Add(new Recipient
             {
@@ -242,8 +234,6 @@ namespace GraphSDKDemo
 
         private async void ReplyMessageButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             string replyText = "Thanks for your mail. I will treat it with all the seriousness it deserves.";
 
             try
@@ -259,8 +249,6 @@ namespace GraphSDKDemo
 
         private async void ForwardMessageButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             var recipients = new List<Recipient>
             {
                 new Recipient
@@ -296,9 +284,5 @@ namespace GraphSDKDemo
             }
         }
 
-        private void ShowSplitView(object sender, RoutedEventArgs e)
-        {
-            MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
-        }
     }
 }

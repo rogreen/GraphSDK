@@ -24,12 +24,12 @@ namespace GraphSDKDemo
         public EventsPage()
         {
             this.InitializeComponent();
+
+            graphClient = (App.Current as App).GraphClient;
         }
 
         private async void GetEventsButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 var options = new List<QueryOption>
@@ -61,7 +61,7 @@ namespace GraphSDKDemo
                 }
 
                 EventCountTextBlock.Text = $"You have {calendar.Count()} events in the next week:";
-                EventsListView.ItemsSource = MyEvents;
+                EventsDataGrid.ItemsSource = MyEvents;
             }
             catch (ServiceException ex)
             {
@@ -71,8 +71,6 @@ namespace GraphSDKDemo
 
         private async void GetTodayEventsButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 var options = new List<QueryOption>
@@ -106,7 +104,7 @@ namespace GraphSDKDemo
                 }
 
                 EventCountTextBlock.Text = $"You have {calendar.Count()} events today:";
-                EventsListView.ItemsSource = MyEvents;
+                EventsDataGrid.ItemsSource = MyEvents;
             }
             catch (ServiceException ex)
             {
@@ -116,8 +114,6 @@ namespace GraphSDKDemo
 
         private async void GetBirthdaysButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             try
             {
                 var options = new List<QueryOption>
@@ -142,7 +138,7 @@ namespace GraphSDKDemo
                 }
 
                 EventCountTextBlock.Text = $"You have {MyEvents.Count()} birthdays in the next 2 weeks:";
-                EventsListView.ItemsSource = MyEvents;
+                EventsDataGrid.ItemsSource = MyEvents;
             }
             catch (ServiceException ex)
             {
@@ -150,13 +146,11 @@ namespace GraphSDKDemo
             }
         }
 
-        private async void EventsListView_SelectionChanged(Object sender, SelectionChangedEventArgs e)
+        private async void EventsDataGrid_SelectionChanged(Object sender, SelectionChangedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
-            if (EventsListView.SelectedItem != null)
+            if (EventsDataGrid.SelectedItem != null)
             {
-                selectedEvent = ((Models.Event)EventsListView.SelectedItem);
+                selectedEvent = ((Models.Event)EventsDataGrid.SelectedItem);
 
                 myEvent = await graphClient.Me.Events[selectedEvent.Id].Request().GetAsync();
 
@@ -191,9 +185,6 @@ namespace GraphSDKDemo
 
         private async void CreateEventButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
-
             //List of attendees
             var attendees = new List<Attendee>();
             var attendee = new Attendee();
@@ -257,8 +248,6 @@ namespace GraphSDKDemo
 
         private async void UpdateEventButton_Click(Object sender, RoutedEventArgs e)
         {
-            graphClient = AuthenticationHelper.GetAuthenticatedClient();
-
             var eventToUpdate = new Event()
             {
                 Subject = $"{eventSubject} (Updated)"
@@ -286,9 +275,5 @@ namespace GraphSDKDemo
             }
         }
 
-        private void ShowSplitView(object sender, RoutedEventArgs e)
-        {
-            MySamplesPane.SamplesSplitView.IsPaneOpen = !MySamplesPane.SamplesSplitView.IsPaneOpen;
-        }
     }
 }

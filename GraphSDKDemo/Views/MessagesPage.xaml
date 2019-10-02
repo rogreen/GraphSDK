@@ -1,52 +1,10 @@
 ﻿<Page x:Class="GraphSDKDemo.MessagesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:GraphSDKDemo"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:data="using:GraphSDKDemo.Models"
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
       mc:Ignorable="d">
-
-    <Page.Resources>
-        <!-- When using x:Bind, you need to set x:DataType -->
-        <DataTemplate x:Name="MessageListViewTemplate"
-                      x:DataType="data:Message">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0"
-                           Grid.Column="1"
-                           Text="{x:Bind Subject}"
-                           x:Phase="1"
-                           Style="{ThemeResource BaseTextBlockStyle}"
-                           Margin="12,6,0,0" />
-                <TextBlock  Grid.Row="1"
-                            Grid.Column="1"
-                            Text="{x:Bind Sender}"
-                            x:Phase="2"
-                            Style="{ThemeResource BodyTextBlockStyle}"
-                            Margin="12,0,0,6" />
-                <StackPanel Grid.Row="2"
-                            Grid.Column="1"
-                            Orientation="Horizontal">
-                    <TextBlock  Text="{x:Bind Importance}"
-                                x:Phase="2"
-                                Style="{ThemeResource BodyTextBlockStyle}"
-                                Margin="12,0,0,6" />
-                    <TextBlock  Text="importance"
-                                Style="{ThemeResource BodyTextBlockStyle}"
-                                Margin="5,0,0,0" />
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -60,12 +18,10 @@
         </Grid.ColumnDefinitions>
 
         <!--#region Navigation Panel -->
-        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
-                VerticalAlignment="Center"
-                Click="ShowSplitView" />
         <TextBlock Text="Messages Sample"
                    VerticalAlignment="Center"
                    Style="{ThemeResource TitleTextBlockStyle}"
+                   Margin="0,0,0,20"
                    Grid.Column="1" />
         <!--#endregion-->
 
@@ -129,30 +85,31 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ListView x:Name="MessagesListView"
-                      ItemsSource="{x:Bind MyMessages}"
-                      ItemTemplate="{StaticResource MessageListViewTemplate}"
-                      SelectionMode="Single"
-                      ShowsScrollingPlaceholders="True"
-                      Grid.Row="0"
-                      Grid.Column="0"
-                      Margin="-10,10,0,0"
-                      SelectionChanged="MessagesListView_SelectionChanged">
-
-                <!--<ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate x:DataType="data:GroupInfoList">
-                            <TextBlock Text="{x:Bind Key}"
-                                       Style="{ThemeResource TitleTextBlockStyle}" />
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ListView.GroupStyle>-->
-            </ListView>
+            <controls:DataGrid x:Name="MessagesDataGrid" 
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Margin="-10,10,0,0"
+                               AutoGenerateColumns="False" 
+                               SelectionChanged="MessagesDataGrid_SelectionChanged">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn
+                        Header="Subject"
+                        Width="SizeToCells"
+                        Binding="{Binding Subject}"/>
+                    <!--<controls:DataGridTextColumn
+                        Header="Sender"
+                        Width="SizeToCells"
+                        Binding="{Binding Sender}"/>
+                    <controls:DataGridTextColumn
+                        Header="Importance"
+                        Width="SizeToCells"
+                        Binding="{Binding Importance}"/>--> 
+                </controls:DataGrid.Columns>
+            </controls:DataGrid>
 
             <ScrollViewer Grid.Row="0"
-                          Grid.Column="1">
+                          Grid.Column="1"
+                          Margin="20,0,0,0">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Left"
@@ -245,10 +202,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-
         </Grid>
-        <local:SamplesPane x:Name="MySamplesPane"
-                           Grid.ColumnSpan="2"
-                           Grid.RowSpan="3" />
     </Grid>
 </Page>
