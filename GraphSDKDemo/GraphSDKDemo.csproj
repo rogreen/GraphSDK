@@ -170,6 +170,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Graph">
       <Version>1.17.0</Version>
     </PackageReference>

@@ -85,7 +85,7 @@ namespace GraphSDKDemo
                 myContact = await graphClient.Me.Contacts[selectedContact.Id]
                                              .Request().GetAsync();
 
-                DisplayNameTextBlock.Text = (myContact.DisplayName != string.Empty) ?
+                DisplayNameTextBlock.Text = (!string.IsNullOrEmpty(myContact.DisplayName)) ?
                                              myContact.DisplayName :
                                              "Unknown name";
                 EmailAddressTextBlock.Text = (myContact.EmailAddresses.Count() > 0) ?
