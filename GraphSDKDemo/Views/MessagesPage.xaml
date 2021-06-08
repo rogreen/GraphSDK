@@ -43,11 +43,11 @@
                         Margin="10,0,0,0"
                         Width="150"
                         Click="GetHighImportanceMessagesButton_Click" />
-                <Button x:Name="GetRogreenHighImportanceMessagesButton"
-                        Content="Get rogreen ! mail"
+                <Button x:Name="GetUnreadHighImportanceMessagesButton"
+                        Content="Get unread ! mail"
                         Margin="10,0,0,0"
                         Width="150"
-                        Click="GetRogreenHighImportanceMessagesButton_Click" />
+                        Click="GetUnreadHighImportanceMessagesButton_Click" />
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Margin="0,10,0,0">

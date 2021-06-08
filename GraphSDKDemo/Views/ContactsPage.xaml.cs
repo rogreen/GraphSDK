@@ -124,13 +124,13 @@ namespace GraphSDKDemo
         {
             var contactToAdd = new Contact()
             {
-                GivenName = "Rufus T Firefly",
-                DisplayName = "Rufus T Firefly"
+                GivenName = "A Goode Frendomine",
+                DisplayName = "A Goode Frendomine"
             };
             var emailAddresses = new List<EmailAddress>();
             var emailAddress = new EmailAddress()
             {
-                Address = "rufus@northwind.com"
+                Address = "ceo@northwind.com"
             };
             emailAddresses.Add(emailAddress);
             contactToAdd.EmailAddresses = emailAddresses;

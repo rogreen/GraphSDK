@@ -33,9 +33,6 @@ namespace GraphSDKDemo
             try
             {
                 // Get all messages, whether or not they are in the Inbox
-                //userMessages = await graphClient.Me.Messages.Request().Top(20)
-                //                                .Select("sender, from, subject, importance")
-                //                                .GetAsync();
                 userMessages = await graphClient.Me.Messages.Request().Top(20)
                                                 .Select("sender, from, subject, importance")
                                                 .GetAsync();
@@ -138,12 +135,14 @@ namespace GraphSDKDemo
             }
         }
 
-        private async void GetRogreenHighImportanceMessagesButton_Click(Object sender, RoutedEventArgs e)
+        private async void GetUnreadHighImportanceMessagesButton_Click(Object sender, RoutedEventArgs e)
         {
             try
             {
-                string filter = "importance eq 'high' " +
-                                "and sender/emailaddress/address eq 'rogreen@microsoft.com'";
+                //string filter = "importance eq 'high' " +
+                //                "and sender/emailaddress/address eq 'rgreen2005@msn.com'";
+                //string filter = "importance eq 'high' and isread eq 'true'";
+                string filter = "importance eq 'high'";
                 folderMessages = await graphClient.Me.MailFolders.Inbox.Messages.Request()
                                                   .Filter(filter).GetAsync();
 
@@ -151,21 +150,24 @@ namespace GraphSDKDemo
 
                 foreach (var message in folderMessages)
                 {
-                    MyMessages.Add(new Models.Message
+                    if (message.IsRead == false)
                     {
-                        Id = message.Id,
-                        Sender = (message.Sender != null) ?
-                                  message.Sender.EmailAddress.Name :
-                                  "Unknown name",
-                        From = (message.Sender != null) ?
-                                  message.Sender.EmailAddress.Address :
-                                  "Unknown email",
-                        Subject = message.Subject ?? "No subject",
-                        Importance = message.Importance.ToString()
-                    });
+                        MyMessages.Add(new Models.Message
+                        {
+                            Id = message.Id,
+                            Sender = (message.Sender != null) ?
+                                      message.Sender.EmailAddress.Name :
+                                      "Unknown name",
+                            From = (message.Sender != null) ?
+                                      message.Sender.EmailAddress.Address :
+                                      "Unknown email",
+                            Subject = message.Subject ?? "No subject",
+                            Importance = message.Importance.ToString()
+                        });
+                    }
                 }
 
-                MessageCountTextBlock.Text = $"You have {MyMessages.Count()} red bang messages:";
+                MessageCountTextBlock.Text = $"You have {MyMessages.Count()} unread red bang messages:";
                 MessagesDataGrid.ItemsSource = MyMessages;
             }
             catch (ServiceException ex)
@@ -238,7 +240,23 @@ namespace GraphSDKDemo
 
             try
             {
-                await graphClient.Me.Messages[selectedMessage.Id].Reply(replyText)
+                selectedMessage = ((Models.Message)MessagesDataGrid.SelectedItem);
+
+                var messageToReply = new Message
+                {
+                    ToRecipients = new List<Recipient>()
+                    {
+                        new Recipient
+                        {
+                            EmailAddress = new EmailAddress
+                            {
+                                Address = selectedMessage.From
+                            }
+                        }
+                    }
+                };
+
+                await graphClient.Me.Messages[selectedMessage.Id].Reply(messageToReply, replyText)
                                  .Request().PostAsync();
             }
             catch (ServiceException ex)
@@ -264,7 +282,7 @@ namespace GraphSDKDemo
             try
             {
                 await graphClient.Me.Messages[selectedMessage.Id]
-                                 .Forward(forwardText, recipients).Request().PostAsync();
+                                 .Forward(recipients, null, forwardText).Request().PostAsync();
             }
             catch (ServiceException ex)
             {
